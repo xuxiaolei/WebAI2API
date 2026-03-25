@@ -87,8 +87,8 @@ async function generate(context, prompt, imgPaths, modelId, meta = {}) {
                 await page.keyboard.press('Enter');
                 await sleep(300, 500);
 
-                // 获取所有 menuitemradio 选项的文本
-                const menuItemsLocator = page.getByRole('menuitemradio');
+                // 获取所有 menuitem 选项的文本
+                const menuItemsLocator = page.getByRole('menuitem');
                 const menuItemsCount = await menuItemsLocator.count();
 
                 if (menuItemsCount === 0) {
@@ -107,16 +107,16 @@ async function generate(context, prompt, imgPaths, modelId, meta = {}) {
 
                     if (hasPro) {
                         // 有 Pro 选项的情况
-                        if (modelId === 'gemini-3-pro' || modelId === 'gemini-exp-1206') {
+                        if (modelId === 'gemini-3.1-pro') {
                             targetPrefix = 'Pro';
-                        } else if (modelId === 'gemini-3-flash' || modelId === 'gemini-2.0-flash-exp') {
+                        } else if (modelId === 'gemini-3.1-flash-thinking') {
                             targetPrefix = 'Thinking';
                         } else {
                             targetPrefix = 'Fast';
                         }
                     } else {
                         // 没有 Pro 选项的情况
-                        if (modelId === 'gemini-3-pro' || modelId === 'gemini-exp-1206') {
+                        if (modelId === 'gemini-3.1-pro' || modelId === 'gemini-3.1-flash-thinking') {
                             targetPrefix = 'Thinking';
                         } else {
                             targetPrefix = 'Fast';
@@ -214,10 +214,9 @@ export const manifest = {
     },
 
     models: [
-        { id: 'gemini-2.0-flash-exp', imagePolicy: 'optional', type: 'text' },
-        { id: 'gemini-exp-1206', imagePolicy: 'optional', type: 'text' },
-        { id: 'gemini-3-pro', imagePolicy: 'optional', type: 'text' },
-        { id: 'gemini-3-flash', imagePolicy: 'optional', type: 'text' }
+        { id: 'gemini-3.1-flash', imagePolicy: 'optional', type: 'text' },
+        { id: 'gemini-3.1-flash-thinking', imagePolicy: 'optional', type: 'text' },
+        { id: 'gemini-3.1-pro', imagePolicy: 'optional', type: 'text' }
     ],
 
     navigationHandlers: [],

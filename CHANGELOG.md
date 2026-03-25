@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.5.9] - 2026-03-25
+
+### 🐛 Fixed
+- **适配器**
+  - 尝试修复同实例多窗口时出现点击超时的问题
+  - 修复 Gemini 文本适配器不选择模型的问题
+  - 修正 Gemini 文本适配器的模型 ID
+
 ## [3.5.8] - 2026-03-22
 
 ### ✨ Added
