@@ -48,6 +48,7 @@ import {
 } from '../../../utils/history.js';
 import path from 'path';
 import fs from 'fs/promises';
+import { useContextDownload } from '../../../backend/utils/download.js';
 
 /**
  * 读取请求体
@@ -565,13 +566,15 @@ export function createAdminRouter(context) {
                 const body = await readBody(req);
                 const mediaIndex = body.mediaIndex ?? 0;
 
-                // 使用 queueManager 的浏览器下载（如果可用）
+                // 使用 Pool 的浏览器下载（如果可用）
                 let downloadFn = null;
                 try {
-                    if (queueManager && queueManager.downloadMedia) {
-                        downloadFn = (url) => queueManager.downloadMedia(url);
+                    const poolContext = queueManager?.getPoolContext?.();
+                    const page = poolContext?.getFirstPage?.();
+                    if (page) {
+                        downloadFn = (url) => useContextDownload(url, page);
                     }
-                } catch { /* queueManager 不可用，使用后备方案 */ }
+                } catch { /* Pool 未初始化，使用后备方案 */ }
 
                 const result = await retryMediaDownload(id, mediaIndex, downloadFn);
                 if (result.success) {

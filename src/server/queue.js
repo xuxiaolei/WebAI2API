@@ -351,18 +351,6 @@ export function createQueueManager(queueConfig, callbacks) {
         return await getCookies(workerName, domain);
     }
 
-    /**
-     * 使用 Worker 的浏览器下载媒体
-     * @param {string} url - 媒体 URL
-     * @returns {Promise<{image?: string, imageUrl?: string, error?: string}>}
-     */
-    async function downloadMedia(url) {
-        if (!poolContext || !poolContext.downloadMedia) {
-            throw new Error('Pool 未初始化或不支持 downloadMedia');
-        }
-        return await poolContext.downloadMedia(url);
-    }
-
     return {
         addTask,
         getStatus,
@@ -370,7 +358,6 @@ export function createQueueManager(queueConfig, callbacks) {
         canAcceptNonStreaming,
         initializePool,
         getPoolContext,
-        getWorkerCookies,
-        downloadMedia
+        getWorkerCookies
     };
 }
