@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🐛 Fixed
 - **适配器**
   - 修复 Gemini 文本适配器遇到长提示词的时候无法选择模型的问题
+  - 修复豆包上传图片无法点击的问题
 
 ## [3.6.2] - 2025-03-31
 

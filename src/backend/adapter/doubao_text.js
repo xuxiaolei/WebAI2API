@@ -55,7 +55,9 @@ async function generate(context, prompt, imgPaths, modelId, meta = {}) {
         await sleep(300, 500);
 
         // 给予 1 秒的缓冲时间等待 React 渲染按钮
-        const modelSelectorBtn = page.locator('button[aria-haspopup="menu"]:visible:has([data-testid="deep-thinking-action-button"], [data-testid="mode-select-action-button"])').first();
+        const modelSelectorBtn = page.locator('button[aria-haspopup="menu"]')
+            .filter({ has: page.locator('[data-testid="deep-thinking-action-button"], [data-testid="mode-select-action-button"]') })
+            .first();
         let selectorExists = false;
         try {
             await modelSelectorBtn.waitFor({ state: 'attached', timeout: 1000 });
@@ -98,8 +100,7 @@ async function generate(context, prompt, imgPaths, modelId, meta = {}) {
                 // 点击上传菜单按钮
                 const uploadMenuBtn = page.locator('#input-engine-container button[aria-haspopup="menu"]')
                     .filter({ hasNot: page.locator('[data-testid="deep-thinking-action-button"], [data-testid="mode-select-action-button"]') })
-                    .first()
-                    .locator('button');
+                    .first();
                 await safeClick(page, uploadMenuBtn, { bias: 'button' });
                 await sleep(300, 500);
 
