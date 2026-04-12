@@ -92,6 +92,21 @@ async function generate(context, prompt, imgPaths, modelId, meta = {}) {
         // 1. 等待输入框加载
         await waitForInput(page, INPUT_SELECTOR, { click: false });
 
+        // 1.5 切换基础/专业模式 (Instant / Expert)
+        try {
+            const isExpert = modelId ? modelId.endsWith('-expert') : false;
+            const targetType = isExpert ? 'expert' : 'default';
+            const modeBtn = page.locator(`div[data-model-type="${targetType}"]`).first();
+            
+            if (await modeBtn.count() > 0) {
+                logger.info('适配器', `切换 ${isExpert ? 'Expert' : 'Instant'} 模式...`, meta);
+                await safeClick(page, modeBtn, { bias: 'button' });
+                await sleep(300, 500);
+            }
+        } catch (e) {
+            logger.debug('适配器', `模式切换异常 (部分账号可能无此入口): ${e.message}`, meta);
+        }
+
         // 2. 配置模型功能 (thinking / search)
         const modelConfig = manifest.models.find(m => m.id === modelId);
         if (modelConfig) {
@@ -295,10 +310,14 @@ export const manifest = {
 
     // 模型列表
     models: [
-        { id: 'deepseek-v3.2', imagePolicy: 'forbidden' },
-        { id: 'deepseek-v3.2-thinking', imagePolicy: 'forbidden', thinking: true },
-        { id: 'deepseek-v3.2-search', imagePolicy: 'forbidden', search: true },
-        { id: 'deepseek-v3.2-thinking-search', imagePolicy: 'forbidden', thinking: true, search: true },
+        { id: 'deepseek', imagePolicy: 'forbidden' },
+        { id: 'deepseek-thinking', imagePolicy: 'forbidden', thinking: true },
+        { id: 'deepseek-search', imagePolicy: 'forbidden', search: true },
+        { id: 'deepseek-thinking-search', imagePolicy: 'forbidden', thinking: true, search: true },
+        { id: 'deepseek-expert', imagePolicy: 'forbidden' },
+        { id: 'deepseek-thinking-expert', imagePolicy: 'forbidden', thinking: true },
+        { id: 'deepseek-search-expert', imagePolicy: 'forbidden', search: true },
+        { id: 'deepseek-thinking-search-expert', imagePolicy: 'forbidden', thinking: true, search: true },
     ],
 
     // 无需导航处理器

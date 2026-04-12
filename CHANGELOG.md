@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.6.5] - 2026-04-09
 
+### ✨ Added
+- **适配器**
+  - DeepSeek 支持专业模式
+
+### 🐛 Fixed
+- **适配器**
+  - 修复豆包因前端更新导致点击失效
+
+## [3.6.5] - 2026-04-09
+
+### 🔄 Changed
 - **适配器**
   - 更新 Arena 的模型列表
   - 更新 ChatGPT 文本生成的模型列表
