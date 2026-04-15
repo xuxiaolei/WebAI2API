@@ -39,6 +39,14 @@ async function generate(context, prompt, imgPaths, modelId, meta = {}) {
         logger.info('适配器', '开启新会话...', meta);
         await gotoWithCheck(page, TARGET_URL);
 
+        try {
+            logger.debug('适配器', '尝试点击 Temporary chat...', meta);
+            const tempChatBtn = page.getByRole('button', { name: 'Temporary chat' });
+            await safeClick(page, tempChatBtn, { bias: 'button', timeout: 3000 });
+        } catch (e) {
+            logger.debug('适配器', '未找到 Temporary chat 按钮或点击失败，忽略', meta);
+        }
+
         // 1. 等待输入框加载
         await waitForInput(page, inputLocator, { click: false });
 

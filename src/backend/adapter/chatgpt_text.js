@@ -16,7 +16,7 @@ import {
 import { logger } from '../../utils/logger.js';
 
 // --- 配置常量 ---
-const TARGET_URL = 'https://chatgpt.com/';
+const TARGET_URL = 'https://chatgpt.com/?temporary-chat=true'; // 感谢 @zhongjianhua163 提供方案
 const INPUT_SELECTOR = '.ProseMirror';
 
 /**
@@ -139,92 +139,92 @@ async function generate(context, prompt, imgPaths, modelId, meta = {}) {
         await safeClick(page, INPUT_SELECTOR, { bias: 'input' });
         await humanType(page, INPUT_SELECTOR, prompt);
 
+        // 4. 先启动 SSE 监听，再发送提示词（避免竞态）
+        logger.info('适配器', '监听 SSE 流获取文本...', meta);
+
+        let textContent = '';
+        let isComplete = false;
+        let targetMessageId = null;  // 只追踪 channel: "final" 的消息
+
+        const responsePromise = page.waitForResponse(async (response) => {
+            const url = response.url();
+            if (!url.includes('backend-api/f/conversation')) return false;
+            if (response.request().method() !== 'POST') return false;
+            if (response.status() !== 200) return false;
+
+            try {
+                const body = await response.text();
+                const lines = body.split('\n');
+
+                for (const line of lines) {
+                    // 跳过空行和事件行
+                    if (!line.startsWith('data: ')) continue;
+
+                    const dataStr = line.slice(6).trim();
+                    if (dataStr === '[DONE]') {
+                        isComplete = true;
+                        continue;
+                    }
+
+                    try {
+                        const data = JSON.parse(dataStr);
+
+                        // 检测目标消息 (assistant 角色, channel: "final", content_type: "text")
+                        if (data.v?.message?.author?.role === 'assistant' &&
+                            data.v?.message?.channel === 'final' &&
+                            data.v?.message?.content?.content_type === 'text') {
+                            targetMessageId = data.v.message.id;
+                            // 重置内容（即使 parts[0] 为空也要重置，清除之前 commentary 的文本）
+                            const parts = data.v.message.content.parts;
+                            textContent = (parts && parts[0]) || '';
+                        }
+
+                        // 以下所有内容累积都必须在 targetMessageId 设置之后才执行
+                        // 避免误收 commentary / thinking 频道的内容
+                        if (!targetMessageId) continue;
+
+                        // 累积 delta 内容 (append 操作，顶层 path)
+                        if (data.o === 'append' && data.p === '/message/content/parts/0' && data.v) {
+                            textContent += data.v;
+                        }
+
+                        // patch 操作中的 append (数组格式)
+                        if (Array.isArray(data.v)) {
+                            for (const patch of data.v) {
+                                if (patch.o === 'append' && patch.p === '/message/content/parts/0' && patch.v) {
+                                    textContent += patch.v;
+                                }
+                                // 仅在 targetMessageId 存在时检查完成
+                                if (patch.p === '/message/status' && patch.v === 'finished_successfully') {
+                                    isComplete = true;
+                                }
+                            }
+                        }
+
+                        // message_stream_complete 表示完成
+                        if (data.type === 'message_stream_complete') {
+                            isComplete = true;
+                        }
+                    } catch {
+                        // 忽略解析错误
+                    }
+                }
+
+                return isComplete;
+            } catch {
+                return false;
+            }
+        }, { timeout: waitTimeout });
+
         // 5. 发送提示词
         logger.debug('适配器', '发送提示词...', meta);
         await page.keyboard.press('Enter');
 
         logger.info('适配器', '等待生成结果...', meta);
 
-        // 6. 监听 conversation API 的 SSE 流，解析文本内容
-        logger.info('适配器', '监听 SSE 流获取文本...', meta);
-
-        let textContent = '';
-        let isComplete = false;
-        let targetMessageId = null;  // 追踪目标消息 ID
-
+        // 6. 等待 SSE 响应完成
         try {
-            await page.waitForResponse(async (response) => {
-                const url = response.url();
-                if (!url.includes('backend-api/f/conversation')) return false;
-                if (response.request().method() !== 'POST') return false;
-                if (response.status() !== 200) return false;
-
-                try {
-                    const body = await response.text();
-                    const lines = body.split('\n');
-
-                    for (const line of lines) {
-                        // 跳过空行和事件行
-                        if (!line.startsWith('data: ')) continue;
-
-                        const dataStr = line.slice(6).trim();
-                        if (dataStr === '[DONE]') {
-                            isComplete = true;
-                            continue;
-                        }
-
-                        try {
-                            const data = JSON.parse(dataStr);
-
-                            // 检测目标消息 (assistant 角色, channel: "final", content_type: "text")
-                            if (data.v?.message?.author?.role === 'assistant' &&
-                                data.v?.message?.channel === 'final' &&
-                                data.v?.message?.content?.content_type === 'text') {
-                                targetMessageId = data.v.message.id;
-                                // 初始内容
-                                const parts = data.v.message.content.parts;
-                                if (parts && parts[0]) {
-                                    textContent = parts[0];
-                                }
-                            }
-
-                            // 累积 delta 内容 (append 操作)
-                            if (data.o === 'append' && data.p === '/message/content/parts/0' && data.v) {
-                                textContent += data.v;
-                            }
-
-                            // 简单的 delta 追加 (没有 p/o，只有 v)
-                            if (data.v && typeof data.v === 'string' && !data.o && !data.p && targetMessageId) {
-                                textContent += data.v;
-                            }
-
-                            // patch 操作中的 append
-                            if (Array.isArray(data.v)) {
-                                for (const patch of data.v) {
-                                    if (patch.o === 'append' && patch.p === '/message/content/parts/0' && patch.v) {
-                                        textContent += patch.v;
-                                    }
-                                    // 检查是否完成
-                                    if (patch.p === '/message/status' && patch.v === 'finished_successfully') {
-                                        isComplete = true;
-                                    }
-                                }
-                            }
-
-                            // message_stream_complete 表示完成
-                            if (data.type === 'message_stream_complete') {
-                                isComplete = true;
-                            }
-                        } catch {
-                            // 忽略解析错误
-                        }
-                    }
-
-                    return isComplete;
-                } catch {
-                    return false;
-                }
-            }, { timeout: waitTimeout });
+            await responsePromise;
         } catch (e) {
             const pageError = normalizePageError(e, meta);
             if (pageError) return pageError;

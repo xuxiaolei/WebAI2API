@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ Added
 - **适配器**
+  - ChatGPT 和 Gemini 改用临时对话模式防止污染历史列表
+
+### 🐛 Fixed
+- **适配器**
+  - 修复 ChatGPT 在 LaTeX 输出下可能会导致截断的问题
+
+## [3.6.5] - 2026-04-09
+
+### ✨ Added
+- **适配器**
   - DeepSeek 支持专业模式
 
 ### 🐛 Fixed
