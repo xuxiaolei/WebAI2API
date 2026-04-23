@@ -16,7 +16,7 @@ import { PoolManager } from './pool/index.js';
 import { logger } from '../utils/logger.js';
 
 // --- 集中管理的路径常量 ---
-const TEMP_DIR = path.join(process.cwd(), 'data', 'temp');
+const TEMP_DIR = path.join('/tmp/data', 'temp');
 
 // 确保临时目录存在
 if (!fs.existsSync(TEMP_DIR)) {
