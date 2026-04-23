@@ -7,7 +7,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 
 // 日志目录
-const LOG_DIR = path.join(process.cwd(), 'data', 'logs');
+const LOG_DIR = path.join('/tmp/data', 'logs');
 
 /**
  * 获取指定日期的统计文件路径
