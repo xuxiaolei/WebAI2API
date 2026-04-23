@@ -639,7 +639,7 @@ function fixMacOSProperties() {
         return;
     }
 
-    const camoufoxDir = path.join(PROJECT_ROOT, 'camoufox');
+    const camoufoxDir = path.join('/tmp', 'camoufox');
     const resourcesPath = path.join(camoufoxDir, 'Camoufox.app', 'Contents', 'Resources', 'properties.json');
     const macOSDir = path.join(camoufoxDir, 'Camoufox.app', 'Contents', 'MacOS');
     const macOSPath = path.join(macOSDir, 'properties.json');
@@ -662,7 +662,7 @@ function fixMacOSProperties() {
  * 修复 version.json 缺失
  */
 function fixVersionJson() {
-    const camoufoxDir = path.join(PROJECT_ROOT, 'camoufox');
+    const camoufoxDir = path.join('/tmp', 'camoufox');
     const versionJsonPath = path.join(camoufoxDir, 'version.json');
 
     if (!fs.existsSync(camoufoxDir)) {
