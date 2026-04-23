@@ -29,7 +29,7 @@ function getFileMD5(filePath) {
  * @returns {string}
  */
 function getCamoufoxExecutablePath() {
-    const camoufoxDir = path.join('/tmp', 'camoufox');
+    const camoufoxDir = path.join(PROJECT_ROOT, 'camoufox');
     const platform = os.platform();
 
     if (platform === 'win32') {
