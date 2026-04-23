@@ -459,7 +459,7 @@ async function installCamoufox(platform, arch, proxyUrl) {
 
     // 解压 .zip 文件到 camoufox 目录
     logger.info('初始化', '正在解压 Camoufox...');
-    const camoufoxDir = path.join('/tmp', 'camoufox');
+    const camoufoxDir = path.join(PROJECT_ROOT, 'camoufox');
     if (!fs.existsSync(camoufoxDir)) {
         fs.mkdirSync(camoufoxDir, { recursive: true });
     }
@@ -662,7 +662,7 @@ function fixMacOSProperties() {
  * 修复 version.json 缺失
  */
 function fixVersionJson() {
-    const camoufoxDir = path.join('/tmp', 'camoufox');
+    const camoufoxDir = path.join(PROJECT_ROOT, 'camoufox');
     const versionJsonPath = path.join(camoufoxDir, 'version.json');
 
     if (!fs.existsSync(camoufoxDir)) {
