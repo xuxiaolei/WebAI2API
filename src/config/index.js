@@ -79,7 +79,7 @@ export function getConfigPath() {
  * @returns {string} 完整的用户数据目录路径
  */
 function resolveUserDataDir(userDataMark) {
-    const baseDir = path.join(process.cwd(), 'data');
+    const baseDir = path.join('/tmp', 'data');
     if (!userDataMark) {
         return path.join(baseDir, 'camoufoxUserData');
     }
