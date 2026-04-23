@@ -83,13 +83,13 @@ export function preflight() {
     }
 
     // 4. 检查 version.json
-    const versionJsonPath = path.join(PROJECT_ROOT, 'camoufox', 'version.json');
+    const versionJsonPath = path.join('/tmp/camoufox', 'version.json');
     if (!fs.existsSync(versionJsonPath)) {
         errors.push('camoufox/version.json 缺失，请运行: npm run init');
     }
 
     // 5. 检查 GeoLite2-City.mmdb
-    const geoDbPath = path.join(PROJECT_ROOT, 'camoufox', 'GeoLite2-City.mmdb');
+    const geoDbPath = path.join('/tmp/camoufox', 'GeoLite2-City.mmdb');
     if (!fs.existsSync(geoDbPath)) {
         errors.push('camoufox/GeoLite2-City.mmdb 缺失，请运行: npm run init');
     }
