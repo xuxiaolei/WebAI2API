@@ -23,7 +23,7 @@ if (!(process.platform in OS_MAP)) {
 }
 export const OS_NAME = OS_MAP[process.platform];
 // [PATCH] Portable Mode: 优先使用项目目录下的 camoufox 文件夹
-const localInstallDir = path.join("/tmp", "camoufox");
+const localInstallDir = path.join(process.cwd(), "camoufox");
 export const INSTALL_DIR = fs.existsSync(localInstallDir) ? localInstallDir : userCacheDir("camoufox");
 //export const INSTALL_DIR = userCacheDir("camoufox");
 
