@@ -609,7 +609,7 @@ async function installCamoufox(platform, arch, proxyUrl) {
  * @param {boolean} [force=false] - 是否强制下载（忽略已存在检查）
  */
 async function downloadGeoLiteDb(proxyUrl, force = false) {
-    const camoufoxDir = path.join(PROJECT_ROOT, 'camoufox');
+    const camoufoxDir = path.join('/tmp', 'camoufox');
     const destPath = path.join(camoufoxDir, 'GeoLite2-City.mmdb');
 
     // 确保目录存在
