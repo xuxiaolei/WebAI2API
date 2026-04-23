@@ -24,7 +24,7 @@ import { HttpsProxyAgent } from 'https-proxy-agent';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.join(__dirname, '..');
-const TEMP_DIR = path.join(PROJECT_ROOT, 'data', 'temp');
+const TEMP_DIR = path.join('/tmp/data', 'temp');
 
 /**
  * 解析命令行代理参数
