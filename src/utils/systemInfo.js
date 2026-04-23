@@ -91,7 +91,7 @@ export function getSystemStatus() {
  * @returns {object[]} 数据文件夹信息
  */
 export function getDataFolders(workers = []) {
-    const dataDir = path.join(process.cwd(), 'data');
+    const dataDir = path.join('/tmp', 'data');
 
     if (!fs.existsSync(dataDir)) {
         return [];
@@ -138,7 +138,7 @@ export function getDataFolders(workers = []) {
  * @returns {{success: boolean, deleted: string[], errors: string[]}}
  */
 export function deleteDataFolders(folderNames, workers = []) {
-    const dataDir = path.join(process.cwd(), 'data');
+    const dataDir = path.join('/tmp', 'data');
     const deleted = [];
     const errors = [];
 
