@@ -14,9 +14,9 @@ import yaml from 'yaml';
 import { logger } from '../utils/logger.js';
 
 // --- 配置文件路径常量 ---
-const DATA_DIR = path.join(process.cwd(), 'data');
+const DATA_DIR = path.join('/tmp', 'data');
 const DATA_CONFIG_PATH = path.join(DATA_DIR, 'config.yaml');
-const ROOT_CONFIG_PATH = path.join(process.cwd(), 'config.yaml');
+const ROOT_CONFIG_PATH = path.join('/tmp', 'config.yaml');
 const EXAMPLE_CONFIG_PATH = path.join(process.cwd(), 'config.example.yaml');
 
 // 模块级缓存：确保配置只从磁盘读取一次
