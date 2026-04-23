@@ -8,7 +8,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { logger } from './logger.js';
 
-const DATA_DIR = path.join(process.cwd(), 'data', 'history');
+const DATA_DIR = path.join('/tmp/data', 'history');
 const DB_PATH = path.join(DATA_DIR, 'history.db');
 const MEDIA_DIR = path.join(DATA_DIR, 'media');
 
