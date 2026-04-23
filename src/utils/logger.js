@@ -23,7 +23,7 @@ const COLORS = {
 };
 
 // 日志文件配置
-const LOG_DIR = path.join(process.cwd(), 'data', 'logs');
+const LOG_DIR = path.join('/tmp/data', 'logs');
 const LOG_FILE = path.join(LOG_DIR, 'system.log');
 const LOG_FILE_OLD = path.join(LOG_DIR, 'system.log.old');
 const MAX_LOG_SIZE = 5 * 1024 * 1024; // 5MB
