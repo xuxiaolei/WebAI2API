@@ -128,7 +128,7 @@ function joinUnique(seq) {
     return seq.filter((x) => !seen.has(x) && seen.add(x)).join(", ");
 }
 // [PATCH] Portable Mode: 优先检查项目根目录下的 camoufox 文件夹
-const localMMDB = path.join(process.cwd(), "camoufox", "GeoLite2-City.mmdb");
+const localMMDB = path.join("/tmp/camoufox", "GeoLite2-City.mmdb");
 const MMDB_FILE = fs.existsSync(localMMDB)
     ? localMMDB
     : path.join(INSTALL_DIR.toString(), "GeoLite2-City.mmdb");
